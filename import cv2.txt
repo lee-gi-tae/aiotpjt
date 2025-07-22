@@ -1,6 +1,9 @@
 https://lab.ssafy.com/instruction/13th/skeleton-projects/aiot-skeleton.git
 
-$ wget http://jetson.webredirect.org/jp6/cu126/+f/5cf/9ed17e35cb752/torch-2.5.0-cp310-cp310-linux_aarch64.whl#sha256=5cf9ed17e35cb7523812aeda9e7d6353c437048c5a6df1dc6617650333049092
-$ pip install torch-2.5.0-cp310-cp310-linux_aarch64.whl
-$ wget http://jetson.webredirect.org/jp6/cu126/+f/5f9/67f920de3953f/torchvision-0.20.0-cp310-cp310-linux_aarch64.whl#sha256=5f967f920de3953f2a39d95154b1feffd5ccc06b4589e51540dc070021a9adb9
-$ pip install torchvision-0.20.0-cp310-cp310-linux_aarch64.whl
+# PyTorch 2.5.0
+wget https://pypi.jetson-ai-lab.dev/jp6/cu126/+f/5cf/9ed17e35cb752/torch-2.5.0-cp310-cp310-linux_aarch64.whl \
+  -O torch-2.5.0-cp310-cp310-linux_aarch64.whl
+
+# TorchVision 0.19.1 (이름과 버전을 확인 필요—여기서는 예시)
+wget https://pypi.jetson-ai-lab.dev/jp6/cu126/+f/abc/torchvision-0.19.1-cp310-cp310-linux_aarch64.whl \
+  -O torchvision-0.19.1-cp310-cp310-linux_aarch64.whl
