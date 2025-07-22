@@ -1,9 +1,18 @@
 https://lab.ssafy.com/instruction/13th/skeleton-projects/aiot-skeleton.git
 
-# PyTorch 2.5.0
-wget https://pypi.jetson-ai-lab.dev/jp6/cu126/+f/5cf/9ed17e35cb752/torch-2.5.0-cp310-cp310-linux_aarch64.whl \
-  -O torch-2.5.0-cp310-cp310-linux_aarch64.whl
+pip3 install 'numpy<2'
+wget https://pypi.jetson-ai-lab.io/jp6/cu126/+f/6cc/6ecfe8a5994fd/torch-2.6.0-cp310-cp310-linux_aarch64.whl \
+  -O torch-2.6.0-cp310-cp310-linux_aarch64.whl
+pip3 install --force --no-cache-dir torch-2.6.0-cp310-cp310-linux_aarch64.whl
 
-# TorchVision 0.19.1 (이름과 버전을 확인 필요—여기서는 예시)
-wget https://pypi.jetson-ai-lab.dev/jp6/cu126/+f/abc/torchvision-0.19.1-cp310-cp310-linux_aarch64.whl \
-  -O torchvision-0.19.1-cp310-cp310-linux_aarch64.whl
+
+wget https://pypi.jetson-ai-lab.io/jp6/cu126/+f/aa2/2da8dcf4c4c8d/torchvision-0.21.0-cp310-cp310-linux_aarch64.whl \
+  -O torchvision-0.21.0-cp310-cp310-linux_aarch64.whl
+pip3 install --force --no-cache-dir torchvision-0.21.0-cp310-cp310-linux_aarch64.whl
+
+
+python3 - <<EOF
+import torch, torchvision
+print("torch:", torch.__version__, "CUDA:", torch.cuda.is_available())
+print("torchvision:", torchvision.__version__)
+EOF
