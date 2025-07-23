@@ -1,20 +1,17 @@
 https://lab.ssafy.com/instruction/13th/skeleton-projects/aiot-skeleton.git
 
-# 1. PyTorch 2.1.0 다운로드
-wget https://developer.download.nvidia.com/compute/redist/jp/v60/pytorch/torch-2.1.0-cp310-cp310-linux_aarch64.whl
+# PyTorch 2.4 alpha 최신
+wget https://developer.download.nvidia.com/compute/redist/jp/v60/pytorch/torch-2.4.0a0+f70bd71a48.nv24.06.15634931-cp310-cp310-linux_aarch64.whl
+pip3 install torch-2.4.0a0+f70bd71a48*.whl
 
-# 2. 설치
-pip3 install torch-2.1.0-cp310-cp310-linux_aarch64.whl
-
-
-
-# 1. torchvision 0.16.0 다운로드
-wget https://developer.download.nvidia.com/compute/redist/jp/v60/torchvision/torchvision-0.16.0-cp310-cp310-linux_aarch64.whl
-
-# 2. 설치
-pip3 install torchvision-0.16.0-cp310-cp310-linux_aarch64.whl
+# torchvision 설치
+wget https://developer.download.nvidia.com/compute/redist/jp/v60/pytorch/torchvision-0.18.0a0+…linux_aarch64.whl
+pip3 install torchvision-0.18.0a0+…whl
 
 
-확인
-python3 -c "import torch; print(torch.__version__); print(torch.cuda.is_available())"
+python3 - <<EOF
+import torch, torchvision
+print(torch.__version__, torchvision.__version__, torch.cuda.is_available(), torch.version.cuda)
+EOF
+
 
