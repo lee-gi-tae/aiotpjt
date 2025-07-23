@@ -33,5 +33,14 @@ python3 -c "import torch; print(torch.__version__, torch.cuda.is_available(), to
 python3 -c "import torchvision; print(torchvision.__version__)"
 
 
+python3 -c "
+import torch
+print('PyTorch 버전:', torch.__version__)
+print('CUDA 가능 여부:', torch.cuda.is_available())
+print('CUDA 버전:', torch.version.cuda)
+print('GPU 이름:', torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'N/A')
+"
+
+
 
 
