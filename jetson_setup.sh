@@ -1,29 +1,39 @@
 #!/bin/bash
+set -e
 
-# ⚠️ JetPack 버전 확인하세요! 아래 변수에 맞춰 주세요
-JETPACK_VER="6.0"       # 예: "6.0" 또는 "6.2"
-TORCH_WHL="./torch-2.2.0a0+6a974be.nv23.11-cp310-cp310-linux_aarch64.whl"  # JetPack 6.0용
+# 1. 초기화
+sudo apt-get --purge remove -y "*cublas*" "cuda*" "nsight*" "nvidia*" "*cudnn*" "*tensorrt*"
+sudo apt-get autoremove -y
+sudo rm -rf /usr/local/cuda* /usr/include/cudnn* /usr/lib/aarch64-linux-gnu/libcudnn* /usr/lib/aarch64-linux-gnu/libnvinfer*
+pip3 uninstall -y torch torchvision torchaudio || true
+sudo rm -rf ~/.cache/torch
 
-echo "🧹 1. 이전 설치 삭제"
-sudo apt-get --purge remove "*cublas*" "*cudnn*" "cuda*" "nsight*" "nvidia*" -y
-pip3 uninstall -y torch torchvision torchaudio
-sudo apt autoremove -y && sudo apt clean
-sudo rm -rf /usr/local/cuda* /usr/lib/python3*/dist-packages/torch* ~/.cache/torch
-
-echo "📦 2. 의존 패키지 설치"
+# 2. JetPack 설치 준비
 sudo apt update
-sudo apt install -y python3-pip python3-dev build-essential cmake git curl libjpeg-dev zlib1g-dev libopenblas-dev liblapack-dev libx11-dev libgtk-3-dev python3-opencv
-pip3 install --upgrade pip
+sudo apt install -y python3-pip curl libopenblas-dev
+echo "deb https://repo.download.nvidia.com/jetson/common r36.4 main" | sudo tee /etc/apt/sources.list.d/nvidia-l4t-apt-source.list
+echo "deb https://repo.download.nvidia.com/jetson/t234 r36.4 main" | sudo tee -a /etc/apt/sources.list.d/nvidia-l4t-apt-source.list
+sudo apt update
+sudo apt install -y nvidia-jetpack
 
-echo "📥 3. PyTorch + TorchVision + 기타 설치"
-pip3 install "$TORCH_WHL"
-pip3 install torchvision==0.16.0+nv23.10 torchaudio==2.2.0+nv23.10 --extra-index-url https://pypi.ngc.nvidia.com
-pip3 install ultralytics numpy flask requests paho-mqtt pyserial gTTS playsound speechrecognition pyaudio
+# 3. cuSPARSELT 설치
+curl -OL https://developer.download.nvidia.com/compute/cusparselt/redist/libcusparse_lt/linux-aarch64/libcusparse_lt-linux-aarch64-0.6.3.2-archive.tar.xz
+tar xf libcusparse_lt*.tar.xz
+sudo cp -a libcusparse_lt*/include/* /usr/local/cuda/include/
+sudo cp -a libcusparse_lt*/lib/* /usr/local/cuda/lib64/
+sudo ldconfig
 
-echo "✅ 설치 완료"
+# 4. PyTorch 설치
+python3 -m pip install --upgrade pip numpy
+pip3 install --no-cache https://developer.download.nvidia.com/compute/redist/jp/v61/pytorch/torch-2.5.0a0+872d972e41.nv24.08.17622132-cp310-cp310-linux_aarch64.whl
+# torchvision/torchaudio (주소 자동 재지정)
+pip3 install --no-cache torchaudio-2.5.0*.whl torchvision-0.18*.whl
+
+# 5. 확인
+echo "===" 
+dpkg-query --show nvidia-jetpack
+nvcc --version
 python3 - <<EOF
 import torch
-print("Torch:", torch.__version__, "CUDA available:", torch.cuda.is_available())
-import torchvision; print("TorchVision:", torchvision.__version__)
-import torchaudio; print("TorchAudio:", torchaudio.__version__)
+print("Torch:", torch.__version__, "CUDA:", torch.cuda.is_available())
 EOF
