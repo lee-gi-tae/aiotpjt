@@ -1,24 +1,38 @@
-# [1] 필수 패키지 설치
-sudo apt update
-sudo apt install -y build-essential cmake git curl libopenblas-dev libjpeg-dev zlib1g-dev libpng-dev python3-pip
+다운로드
 
-# [2] cuDNN 설치 (libcudnn.so.8 오류 방지)
-sudo apt install -y nvidia-cudnn8 nvidia-cudnn8-dev
-
-# [3] cuSPARSELt 수동 설치 (JetPack 6.x에 맞게)
+bash
+복사
+편집
 cd ~
-curl -OL https://developer.download.nvidia.com/compute/cusparselt/redist/libcusparse_lt/linux-aarch64/libcusparse_lt-linux-aarch64-0.6.3.2-archive.tar.xz
-tar xf libcusparse_lt-linux-aarch64-0.6.3.2-archive.tar.xz
-sudo cp -a libcusparse_lt-linux-aarch64-0.6.3.2-archive/include/* /usr/local/cuda/include/
-sudo cp -a libcusparse_lt-linux-aarch64-0.6.3.2-archive/lib/* /usr/local/cuda/lib64/
+wget https://developer.download.nvidia.com/compute/redist/cudnn/v8.9.6/local_installers/cudnn-linux-aarch64-8.9.6.50_cuda12-archive.tar.xz
+압축 풀기
+
+bash
+복사
+편집
+tar -xf cudnn-linux-aarch64-8.9.6.50_cuda12-archive.tar.xz
+cd cudnn-linux-aarch64-8.9.6.50_cuda12-archive
+CUDA 경로로 복사
+
+bash
+복사
+편집
+sudo cp include/* /usr/local/cuda/include/
+sudo cp lib/* /usr/local/cuda/lib64/
 sudo ldconfig
+확인
 
-# [4] PyTorch (torch) 설치
-pip3 uninstall torch -y
-wget https://developer.download.nvidia.com/compute/redist/jp/v60/pytorch/torch-2.4.0a0+f70bd71a48.nv24.06.15634931-cp310-cp310-linux_aarch64.whl
-pip3 install torch-2.4.0a0+f70bd71a48.nv24.06.15634931-cp310-cp310-linux_aarch64.whl
+bash
+복사
+편집
+ls /usr/local/cuda/lib64/libcudnn.so*
+→ 출력이 나오면 성공
 
-# [5] torchvision 소스 설치
-git clone --branch v0.18.0 https://github.com/pytorch/vision.git
-cd vision
-python3 setup.py install --user
+토치 작동 확인
+
+bash
+복사
+편집
+python3 -c "import torch; print(torch.__version__, torch.cuda.is_available(), torch.version.cuda)"
+→ True 나오면 성공
+
