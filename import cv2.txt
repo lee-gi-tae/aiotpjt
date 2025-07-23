@@ -1,61 +1,12 @@
-sudo mv /etc/apt/sources.list.d/cusparselt-local-tegra-ubuntu2204-0.6.2.list /etc/apt/sources.list.d/cusparselt-local-tegra-ubuntu2204-0.6.2.list.disabled
+sudo rm -rf /usr/lib/aarch64-linux-gnu/libcudnn*
+sudo rm -rf /usr/lib/aarch64-linux-gnu/libcublas*
+sudo rm -rf /usr/lib/aarch64-linux-gnu/libcurand*
+sudo rm -rf /usr/lib/aarch64-linux-gnu/libcufft*
 
-# 1. 누락된 GPG 키 수동 추가 (NO_PUBKEY 오류 해결)
-sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys DA689C6EB12A2319
 
-# 2. 사용하지 않는 로컬 리포지토리 비활성화 (mv로 .disabled 확장자 변경)
-sudo mv /etc/apt/sources.list.d/cusparselt-local-tegra-ubuntu2204-0-6.2.list /etc/apt/sources.list.d/cusparselt-local-tegra-ubuntu2204-0-6.2.list.disabled 2>/dev/null
-sudo mv /etc/apt/sources.list.d/nv-tensorrt-local-tegra-ubuntu2204-10.3.0-cuda-12.5.list /etc/apt/sources.list.d/nv-tensorrt-local-tegra-ubuntu2204-10.3.0-cuda-12.5.list.disabled 2>/dev/null
-sudo mv /etc/apt/sources.list.d/l4t-cuda-tegra-ubuntu2204-12-6-local.list /etc/apt/sources.list.d/l4t-cuda-tegra-ubuntu2204-12-6-local.list.disabled 2>/dev/null
-
-# 3. 패키지 목록 갱신 (이제 오류 없어야 함)
 sudo apt update
+sudo apt install nvidia-jetpack
 
+python3 -c "import torch; print(torch.__version__, torch.cuda.is_available())"
 
-
-
-
-
-
-sudo apt-key adv --fetch-keys https://repo.download.nvidia.com/jetson/jetson-ota-public.asc
-
-
-bash
-복사
-편집
-cd ~
-wget https://developer.download.nvidia.com/compute/redist/cudnn/v8.9.7/local_installers/cudnn-linux-aarch64-8.9.7.29_cuda12-archive.tar.xz
-wget https://developer.download.nvidia.com/compute/redist/cudnn/v8.9.7/local_installers/cudnn-linux-aarch64-8.9.7.29_cuda12-archive.tar.xz
-
-
-압축 풀기
-
-bash
-복사
-편집
-tar -xf cudnn-linux-aarch64-8.9.6.50_cuda12-archive.tar.xz
-cd cudnn-linux-aarch64-8.9.6.50_cuda12-archive
-CUDA 경로로 복사
-
-bash
-복사
-편집
-sudo cp include/* /usr/local/cuda/include/
-sudo cp lib/* /usr/local/cuda/lib64/
-sudo ldconfig
-확인
-
-bash
-복사
-편집
-ls /usr/local/cuda/lib64/libcudnn.so*
-→ 출력이 나오면 성공
-
-토치 작동 확인
-
-bash
-복사
-편집
-python3 -c "import torch; print(torch.__version__, torch.cuda.is_available(), torch.version.cuda)"
-→ True 나오면 성공
-
+dpkg-query --show nvidia-jetpack
