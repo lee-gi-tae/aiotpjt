@@ -24,14 +24,34 @@ git checkout v0.19.0
 # 4. torchvision 빌드 및 설치
 python3 setup.py install --user
 
-sudo apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cusparselt/0.6.2/local_installers/cusparselt.pub
 
-echo "deb https://developer.download.nvidia.com/compute/cusparselt/0.6.2/local_installers/deb local main" | sudo tee /etc/apt/sources.list.d/cusparselt.list
 
-sudo apt-get update
-sudo apt-get install -y libcusparselt0 libcusparselt-dev
+cat << 'EOF' > install_cusparselt.sh
+#!/bin/bash
+set -ex
 
-dpkg -l | grep cusparselt
+# JetPack 6.x, CUDA 12.6 기준 cuSPARSELt 0.6.3.2 설치
+CUSPARSELT_NAME="libcusparse_lt-linux-aarch64-0.6.3.2-archive"
+curl --retry 3 -OLs \
+  "https://developer.download.nvidia.com/compute/cusparselt/redist/libcusparse_lt/linux-aarch64/${CUSPARSELT_NAME}.tar.xz"
+tar xf "${CUSPARSELT_NAME}.tar.xz"
+
+sudo cp -a ${CUSPARSELT_NAME}/include/* /usr/local/cuda/include/
+sudo cp -a ${CUSPARSELT_NAME}/lib/* /usr/local/cuda/lib64/
+
+cd /
+sudo rm -rf /install_cusparselt.sh "${CUSPARSELT_NAME}.tar.xz" ${CUSPARSELT_NAME}
+sudo ldconfig
+EOF
+
+chmod +x install_cusparselt.sh
+
+
+sudo ./install_cusparselt.sh
+
+ls -l /usr/local/cuda/include/cusparseLt.h
+ls -l /usr/local/cuda/lib64/libcusparseLt*
+
 
 
 
