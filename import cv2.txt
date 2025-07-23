@@ -24,6 +24,16 @@ git checkout v0.19.0
 # 4. torchvision 빌드 및 설치
 python3 setup.py install --user
 
+sudo apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cusparselt/0.6.2/local_installers/cusparselt.pub
+
+echo "deb https://developer.download.nvidia.com/compute/cusparselt/0.6.2/local_installers/deb local main" | sudo tee /etc/apt/sources.list.d/cusparselt.list
+
+sudo apt-get update
+sudo apt-get install -y libcusparselt0 libcusparselt-dev
+
+dpkg -l | grep cusparselt
+
+
 
 python3 - <<EOF
 import torch, torchvision
