@@ -1,39 +1,36 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -e
-
-# 1. 초기화
+echo "===== 1. 초기화: 기존 NVIDIA 관련 컴포넌트 완전 삭제 ====="
 sudo apt-get --purge remove -y "*cublas*" "cuda*" "nsight*" "nvidia*" "*cudnn*" "*tensorrt*"
 sudo apt-get autoremove -y
 sudo rm -rf /usr/local/cuda* /usr/include/cudnn* /usr/lib/aarch64-linux-gnu/libcudnn* /usr/lib/aarch64-linux-gnu/libnvinfer*
 pip3 uninstall -y torch torchvision torchaudio || true
 sudo rm -rf ~/.cache/torch
 
-# 2. JetPack 설치 준비
+echo "===== 2. JetPack Compute Stack 설치 준비 ====="
 sudo apt update
 sudo apt install -y python3-pip curl libopenblas-dev
-echo "deb https://repo.download.nvidia.com/jetson/common r36.4 main" | sudo tee /etc/apt/sources.list.d/nvidia-l4t-apt-source.list
-echo "deb https://repo.download.nvidia.com/jetson/t234 r36.4 main" | sudo tee -a /etc/apt/sources.list.d/nvidia-l4t-apt-source.list
+
+echo "===== 3. NVIDIA 저장소 등록 및 JetPack 설치 ====="
+sudo sh -c 'echo "deb https://repo.download.nvidia.com/jetson/common r36.4 main" > /etc/apt/sources.list.d/nvidia-l4t-apt-source.list'
+sudo sh -c 'echo "deb https://repo.download.nvidia.com/jetson/t234 r36.4 main" >> /etc/apt/sources.list.d/nvidia-l4t-apt-source.list'
 sudo apt update
 sudo apt install -y nvidia-jetpack
 
-# 3. cuSPARSELT 설치
-curl -OL https://developer.download.nvidia.com/compute/cusparselt/redist/libcusparse_lt/linux-aarch64/libcusparse_lt-linux-aarch64-0.6.3.2-archive.tar.xz
-tar xf libcusparse_lt*.tar.xz
-sudo cp -a libcusparse_lt*/include/* /usr/local/cuda/include/
-sudo cp -a libcusparse_lt*/lib/* /usr/local/cuda/lib64/
-sudo ldconfig
+echo "===== 4. 공식 pip 인덱스 자동으로 PyTorch 설치 ====="
+pip3 install --upgrade pip numpy
+pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/jet/arm64
 
-# 4. PyTorch 설치
-python3 -m pip install --upgrade pip numpy
-pip3 install --no-cache https://developer.download.nvidia.com/compute/redist/jp/v61/pytorch/torch-2.5.0a0+872d972e41.nv24.08.17622132-cp310-cp310-linux_aarch64.whl
-# torchvision/torchaudio (주소 자동 재지정)
-pip3 install --no-cache torchaudio-2.5.0*.whl torchvision-0.18*.whl
-
-# 5. 확인
-echo "===" 
-dpkg-query --show nvidia-jetpack
-nvcc --version
+echo "===== 5. 설치 확인 ====="
+echo "→ JetPack 버전: $(dpkg-query --show nvidia-jetpack || echo '설치 안됨')"
+echo "→ nvcc 버전:"
+nvcc --version || echo "nvcc 없음"
+echo "→ PyTorch + CUDA 확인:"
 python3 - <<EOF
 import torch
-print("Torch:", torch.__version__, "CUDA:", torch.cuda.is_available())
+print("Torch:", torch.__version__)
+print("CUDA available:", torch.cuda.is_available())
+print("CUDA version:", torch.version.cuda)
 EOF
+
+echo "✅ 전체 설치 완료했습니다!"
