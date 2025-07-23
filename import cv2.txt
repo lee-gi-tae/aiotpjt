@@ -4,7 +4,9 @@ bash
 복사
 편집
 cd ~
-wget https://developer.download.nvidia.com/compute/redist/cudnn/v8.9.6/local_installers/cudnn-linux-aarch64-8.9.6.50_cuda12-archive.tar.xz
+wget https://developer.download.nvidia.com/compute/redist/cudnn/v8.9.7/local_installers/cudnn-linux-aarch64-8.9.7.29_cuda12-archive.tar.xz
+
+
 압축 풀기
 
 bash
