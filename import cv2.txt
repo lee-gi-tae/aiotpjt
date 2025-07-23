@@ -1,5 +1,19 @@
-sudo mv /etc/apt/sources.list.d/cusparselt-local-tegra-repo-ubuntu2204-0.6.2.list /etc/apt/sources.list.d/cusparselt-local-tegra-repo-ubuntu2204-0.6.2.list.disabled
 sudo mv /etc/apt/sources.list.d/cusparselt-local-tegra-ubuntu2204-0.6.2.list /etc/apt/sources.list.d/cusparselt-local-tegra-ubuntu2204-0.6.2.list.disabled
+
+# 1. 누락된 GPG 키 수동 추가 (NO_PUBKEY 오류 해결)
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys DA689C6EB12A2319
+
+# 2. 사용하지 않는 로컬 리포지토리 비활성화 (mv로 .disabled 확장자 변경)
+sudo mv /etc/apt/sources.list.d/cusparselt-local-tegra-ubuntu2204-0-6.2.list /etc/apt/sources.list.d/cusparselt-local-tegra-ubuntu2204-0-6.2.list.disabled 2>/dev/null
+sudo mv /etc/apt/sources.list.d/nv-tensorrt-local-tegra-ubuntu2204-10.3.0-cuda-12.5.list /etc/apt/sources.list.d/nv-tensorrt-local-tegra-ubuntu2204-10.3.0-cuda-12.5.list.disabled 2>/dev/null
+sudo mv /etc/apt/sources.list.d/l4t-cuda-tegra-ubuntu2204-12-6-local.list /etc/apt/sources.list.d/l4t-cuda-tegra-ubuntu2204-12-6-local.list.disabled 2>/dev/null
+
+# 3. 패키지 목록 갱신 (이제 오류 없어야 함)
+sudo apt update
+
+
+
+
 
 
 
