@@ -1,3 +1,6 @@
+sudo mv /etc/apt/sources.list.d/cusparselt-local-tegra-repo-ubuntu2204-0.6.2.list /etc/apt/sources.list.d/cusparselt-local-tegra-repo-ubuntu2204-0.6.2.list.disabled
+
+
 sudo apt-key adv --fetch-keys https://repo.download.nvidia.com/jetson/jetson-ota-public.asc
 
 
