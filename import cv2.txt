@@ -1,7 +1,0 @@
-sudo apt update
-sudo apt install -y python3-pip libopenblas-base libopenmpi-dev
-pip3 install --upgrade pip
-
-pip3 install torch==2.1.0+nv23.10 torchvision==0.16.0+nv23.10 --extra-index-url https://pypi.ngc.nvidia.com
-
-python3 -c "import torch; print(torch.__version__, torch.cuda.is_available())"
